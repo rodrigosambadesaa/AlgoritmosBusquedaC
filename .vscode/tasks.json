@@ -1,0 +1,45 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "-std=c11",
+                "-O2",
+                "-Wall",
+                "-Wextra",
+                "-Wpedantic",
+                "main.c",
+                "quick_sort.c",
+                "vector_dinamico.c",
+                "-o",
+                "quick_sort_benchmark.exe"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "run benchmark",
+            "type": "shell",
+            "command": ".\\quick_sort_benchmark.exe",
+            "dependsOn": "build",
+            "group": "test"
+        },
+        {
+            "label": "generate graph",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "generar_grafica.py"
+            ],
+            "dependsOn": "run benchmark"
+        }
+    ]
+}

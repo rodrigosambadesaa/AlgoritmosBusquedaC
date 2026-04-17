@@ -1,0 +1,27 @@
+# VS Code
+.vscode/*.log
+
+# NetBeans legacy (cleanup/migration)
+nbproject/
+build/
+dist/
+.dep.inc
+
+# C build artifacts
+*.o
+*.obj
+*.d
+*.exe
+*.out
+
+# Runtime artifacts
+*.stackdump
+
+# Generated benchmark and graph outputs
+tiempos_quick_sort.tsv
+quick_sort_grafica.png
+
+# Legacy report and media assets not needed in repo
+Actividad 4. Tiempos..pdf
+Quicsort.JPG
+caract sistema.JPG
