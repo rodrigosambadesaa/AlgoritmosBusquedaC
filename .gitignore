@@ -13,9 +13,20 @@ dist/
 *.d
 *.exe
 *.out
+*.a
+*.dll
+
+# Temporary test files
+test_*.c
+test_*.exe
 
 # Runtime artifacts
 *.stackdump
+core
+
+# Python cache
+__pycache__/
+*.pyc
 
 # Generated benchmark and graph outputs
 tiempos_quick_sort.tsv

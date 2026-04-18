@@ -7,21 +7,24 @@ Practica comparativa de rendimiento entre cuatro algoritmos de ordenacion implem
 - Heap Sort
 - Bubble Sort
 
+El vector dinamico trabaja con un tipo `big_decimal_t` propio (arbitrario en longitud), por lo que se pueden ordenar valores con cualquier numero de digitos en la parte entera y decimal.
+
 ## Estructura del proyecto
 
 - main.c: benchmark comparativo y generacion de tiempos.
 - quick_sort.c: implementaciones de Quick, Merge, Heap y Bubble.
 - quick_sort.h: declaraciones de algoritmos.
+- big_decimal.c y big_decimal.h: TAD BigDecimal de precision arbitraria.
 - vector_dinamico.c y vector_dinamico.h: estructura base del vector.
 - generar_grafica.py: crea una grafica comparativa unica.
-- informe_quick_sort.md: informe tecnico ampliado.
+- informe_algoritmos_busqueda.md: informe tecnico ampliado.
 
 ## Compilacion
 
 En Windows (MSYS2/MinGW o gcc compatible):
 
 ```bash
-gcc -std=c11 -O2 -Wall -Wextra -Wpedantic main.c quick_sort.c vector_dinamico.c -o quick_sort_benchmark.exe
+gcc -std=c11 -O2 -Wall -Wextra -Wpedantic main.c quick_sort.c vector_dinamico.c big_decimal.c -o quick_sort_benchmark.exe
 ```
 
 ## Ejecucion del benchmark

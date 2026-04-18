@@ -3,8 +3,9 @@
 #define VECTOR_DINAMICO_H
 
 #include <stddef.h>
+#include "big_decimal.h"
 
-typedef int elemento_t;
+typedef BigDecimal *elemento_t;
 
 typedef struct
 {

@@ -2,6 +2,27 @@
 
 #include <stdlib.h>
 
+static BigDecimal *bd_clone_local(const BigDecimal *src)
+{
+    BigDecimal *out;
+    char *texto;
+
+    if (src == NULL)
+    {
+        return NULL;
+    }
+
+    texto = bd_to_string(src);
+    if (texto == NULL)
+    {
+        return NULL;
+    }
+
+    out = bd_create_from_str(texto);
+    free(texto);
+    return out;
+}
+
 int vector_crear(vector_t *vector, size_t tam)
 {
     size_t i;
@@ -21,7 +42,19 @@ int vector_crear(vector_t *vector, size_t tam)
     vector->tam = tam;
     for (i = 0; i < tam; i++)
     {
-        vector->datos[i] = 0;
+        vector->datos[i] = bd_create_from_int(0);
+        if (vector->datos[i] == NULL)
+        {
+            size_t j;
+            for (j = 0; j < i; j++)
+            {
+                bd_free(vector->datos[j]);
+            }
+            free(vector->datos);
+            vector->datos = NULL;
+            vector->tam = 0;
+            return 0;
+        }
     }
 
     return 1;
@@ -29,9 +62,19 @@ int vector_crear(vector_t *vector, size_t tam)
 
 void vector_liberar(vector_t *vector)
 {
+    size_t i;
+
     if (vector == NULL)
     {
         return;
+    }
+
+    if (vector->datos != NULL)
+    {
+        for (i = 0; i < vector->tam; i++)
+        {
+            bd_free(vector->datos[i]);
+        }
     }
 
     free(vector->datos);
@@ -51,12 +94,21 @@ size_t vector_tamano(const vector_t *vector)
 
 int vector_asignar(vector_t *vector, size_t posicion, elemento_t valor)
 {
-    if (vector == NULL || vector->datos == NULL || posicion >= vector->tam)
+    BigDecimal *copia;
+
+    if (vector == NULL || vector->datos == NULL || posicion >= vector->tam || valor == NULL)
     {
         return 0;
     }
 
-    vector->datos[posicion] = valor;
+    copia = bd_clone_local(valor);
+    if (copia == NULL)
+    {
+        return 0;
+    }
+
+    bd_free(vector->datos[posicion]);
+    vector->datos[posicion] = copia;
     return 1;
 }
 
@@ -96,7 +148,7 @@ int vector_esta_ordenado(const vector_t *vector)
 
     for (i = 1; i < vector->tam; i++)
     {
-        if (vector->datos[i - 1] > vector->datos[i])
+        if (bd_compare(vector->datos[i - 1], vector->datos[i]) > 0)
         {
             return 0;
         }

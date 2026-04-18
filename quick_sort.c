@@ -10,7 +10,7 @@ static size_t particionar(vector_t *vector, size_t izquierda, size_t derecha)
 
     for (j = izquierda; j < derecha; j++)
     {
-        if (vector->datos[j] <= pivote)
+        if (bd_compare(vector->datos[j], pivote) <= 0)
         {
             vector_intercambiar(vector, i, j);
             i++;
@@ -57,7 +57,7 @@ static void merge(vector_t *vector, size_t izquierda, size_t medio, size_t derec
 
     while (i <= medio && j <= derecha)
     {
-        if (vector->datos[i] <= vector->datos[j])
+        if (bd_compare(vector->datos[i], vector->datos[j]) <= 0)
         {
             auxiliar[k++] = vector->datos[i++];
         }
@@ -123,12 +123,12 @@ static void heapify(vector_t *vector, size_t tam, size_t raiz)
     size_t izquierda = (2 * raiz) + 1;
     size_t derecha = (2 * raiz) + 2;
 
-    if (izquierda < tam && vector->datos[izquierda] > vector->datos[mayor])
+    if (izquierda < tam && bd_compare(vector->datos[izquierda], vector->datos[mayor]) > 0)
     {
         mayor = izquierda;
     }
 
-    if (derecha < tam && vector->datos[derecha] > vector->datos[mayor])
+    if (derecha < tam && bd_compare(vector->datos[derecha], vector->datos[mayor]) > 0)
     {
         mayor = derecha;
     }
@@ -177,7 +177,7 @@ void bubble_sort(vector_t *vector)
         intercambio = 0;
         for (j = 0; j < vector->tam - i - 1; j++)
         {
-            if (vector->datos[j] > vector->datos[j + 1])
+            if (bd_compare(vector->datos[j], vector->datos[j + 1]) > 0)
             {
                 vector_intercambiar(vector, j, j + 1);
                 intercambio = 1;

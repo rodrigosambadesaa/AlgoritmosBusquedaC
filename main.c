@@ -14,12 +14,63 @@
 
 typedef void (*algoritmo_ordenacion_t)(vector_t *);
 
+static BigDecimal *crear_big_decimal_aleatorio(void)
+{
+    size_t digitos_enteros = 1U + (size_t)(rand() % 35);
+    size_t digitos_decimales = (size_t)(rand() % 35);
+    size_t capacidad = digitos_enteros + digitos_decimales + 4U;
+    char *buffer = (char *)malloc(capacidad);
+    size_t i = 0;
+    BigDecimal *valor;
+
+    if (buffer == NULL)
+    {
+        return NULL;
+    }
+
+    if (rand() % 2 == 0)
+    {
+        buffer[i++] = '-';
+    }
+
+    buffer[i++] = (char)('1' + (rand() % 9));
+    for (; i < digitos_enteros + ((buffer[0] == '-') ? 1U : 0U); i++)
+    {
+        buffer[i] = (char)('0' + (rand() % 10));
+    }
+
+    if (digitos_decimales > 0)
+    {
+        size_t j;
+        buffer[i++] = '.';
+        for (j = 0; j < digitos_decimales; j++)
+        {
+            buffer[i++] = (char)('0' + (rand() % 10));
+        }
+    }
+
+    buffer[i] = '\0';
+    valor = bd_create_from_str(buffer);
+    free(buffer);
+    return valor;
+}
+
 static void inicializar_vector_aleatorio(vector_t *vector)
 {
     size_t i;
     for (i = 0; i < vector_tamano(vector); i++)
     {
-        vector_asignar(vector, i, rand());
+        elemento_t valor = crear_big_decimal_aleatorio();
+        if (valor == NULL)
+        {
+            fprintf(stderr, "Error creando big decimal aleatorio en posicion %lu.\n", (unsigned long)i);
+            continue;
+        }
+        if (!vector_asignar(vector, i, valor))
+        {
+            fprintf(stderr, "Error asignando big decimal aleatorio en posicion %lu.\n", (unsigned long)i);
+        }
+        bd_free(valor);
     }
 }
 
@@ -39,7 +90,10 @@ static int copiar_vector(vector_t *destino, const vector_t *origen)
 
     for (i = 0; i < origen->tam; i++)
     {
-        destino->datos[i] = origen->datos[i];
+        if (!vector_asignar(destino, i, origen->datos[i]))
+        {
+            return 0;
+        }
     }
 
     return 1;
