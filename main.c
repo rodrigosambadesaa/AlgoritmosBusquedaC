@@ -5,10 +5,20 @@
 #include "quick_sort.h"
 #include "vector_dinamico.h"
 
+/* Los valores originales del benchmark siguen siendo los predeterminados.
+ * Los overrides solo se usan en pruebas de ejecucion corta. */
+#ifndef TAMANO_INICIAL
 #define TAMANO_INICIAL 1000UL
+#endif
+#ifndef TAMANO_FINAL
 #define TAMANO_FINAL 20000UL
+#endif
+#ifndef PASO
 #define PASO 1000UL
+#endif
+#ifndef REPETICIONES
 #define REPETICIONES 3UL
+#endif
 #define ARCHIVO_SALIDA "tiempos_ordenacion.tsv"
 #define ARCHIVO_SALIDA_LEGADO "tiemposFibonacciRecursivo.txt"
 
@@ -117,7 +127,11 @@ int main(void)
     FILE *archivo_salida;
     FILE *archivo_salida_legado;
 
+#ifdef VECTOR_CI_SMOKE
+    srand(0xC0FFEEu);
+#else
     srand((unsigned int)time(NULL));
+#endif
 
     archivo_salida = fopen(ARCHIVO_SALIDA, "w");
     if (archivo_salida == NULL)
