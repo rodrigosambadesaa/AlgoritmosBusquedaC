@@ -55,23 +55,22 @@ static BigDecimal *crear_big_decimal_aleatorio(void)
     return valor;
 }
 
-static void inicializar_vector_aleatorio(vector_t *vector)
+static int inicializar_vector_aleatorio(vector_t *vector)
 {
     size_t i;
     for (i = 0; i < vector_tamano(vector); i++)
     {
         elemento_t valor = crear_big_decimal_aleatorio();
         if (valor == NULL)
-        {
-            fprintf(stderr, "Error creando big decimal aleatorio en posicion %lu.\n", (unsigned long)i);
-            continue;
-        }
+            return 0;
         if (!vector_asignar(vector, i, valor))
         {
-            fprintf(stderr, "Error asignando big decimal aleatorio en posicion %lu.\n", (unsigned long)i);
+            bd_free(valor);
+            return 0;
         }
         bd_free(valor);
     }
+    return 1;
 }
 
 static int copiar_vector(vector_t *destino, const vector_t *origen)
@@ -147,11 +146,11 @@ int main(void)
 
         for (repeticion = 0; repeticion < REPETICIONES; repeticion++)
         {
-            vector_t base;
-            vector_t v_quick;
-            vector_t v_merge;
-            vector_t v_heap;
-            vector_t v_bubble;
+            vector_t base = {0};
+            vector_t v_quick = {0};
+            vector_t v_merge = {0};
+            vector_t v_heap = {0};
+            vector_t v_bubble = {0};
 
             if (!vector_crear(&base, n) || !vector_crear(&v_quick, n) || !vector_crear(&v_merge, n) || !vector_crear(&v_heap, n) || !vector_crear(&v_bubble, n))
             {
@@ -166,11 +165,22 @@ int main(void)
                 return EXIT_FAILURE;
             }
 
-            inicializar_vector_aleatorio(&base);
-            copiar_vector(&v_quick, &base);
-            copiar_vector(&v_merge, &base);
-            copiar_vector(&v_heap, &base);
-            copiar_vector(&v_bubble, &base);
+            if (!inicializar_vector_aleatorio(&base) ||
+                !copiar_vector(&v_quick, &base) ||
+                !copiar_vector(&v_merge, &base) ||
+                !copiar_vector(&v_heap, &base) ||
+                !copiar_vector(&v_bubble, &base))
+            {
+                vector_liberar(&base);
+                vector_liberar(&v_quick);
+                vector_liberar(&v_merge);
+                vector_liberar(&v_heap);
+                vector_liberar(&v_bubble);
+                fclose(archivo_salida_legado);
+                fclose(archivo_salida);
+                fprintf(stderr, "Error preparando datos del benchmark para n=%lu.\n", (unsigned long)n);
+                return EXIT_FAILURE;
+            }
 
             acumulado_quick += medir_algoritmo_segundos(&v_quick, quick_sort);
             acumulado_merge += medir_algoritmo_segundos(&v_merge, merge_sort);

@@ -1,0 +1,17 @@
+name: Vector safety and original practice build
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  build-and-vector-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the original sorting benchmark
+        run: make clean && make
+      - name: Sanitizers (BigDecimal, resize and overflow)
+        run: |
+          gcc -std=c11 -O1 -g -Wall -Wextra -Wpedantic -fsanitize=address,undefined -fno-omit-frame-pointer -I. tests/test_vector_dinamico.c vector_dinamico.c big_decimal.c -o /tmp/test_vector_dinamico
+          ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 /tmp/test_vector_dinamico
