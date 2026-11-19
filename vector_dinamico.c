@@ -84,11 +84,10 @@ int vector_redimensionar(vector_t *vector, size_t tam)
 
 int vector_crear(vector_t *vector, size_t tam)
 {
-    if (vector == NULL)
+    /* Requiere una estructura vacia {0}; nunca sobrescribir datos vivos. */
+    if (vector == NULL || vector->datos != NULL ||
+        vector->tam != 0 || vector->capacidad != 0)
         return 0;
-    vector->datos = NULL;
-    vector->tam = 0;
-    vector->capacidad = 0;
     return vector_redimensionar(vector, tam);
 }
 
