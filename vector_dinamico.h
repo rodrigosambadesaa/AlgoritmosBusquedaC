@@ -13,7 +13,8 @@ typedef struct
     size_t capacidad;
 } vector_t;
 
-/* Crear sobre un objeto nuevo; liberar antes de volver a crearlo.
+/* Crear sobre objeto inicializado a {0}; rechazar recreacion con datos
+ * vivos para evitar fugas. Liberar antes de volver a crearlo.
  * Los elementos tienen propiedad exclusiva del vector, son BigDecimal
  * inicializados a cero y vector_asignar siempre clona el argumento.
  * vector_recuperar entrega una referencia prestada.

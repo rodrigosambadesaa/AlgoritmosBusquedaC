@@ -12,6 +12,8 @@ int main(void)
     assert(vector_crear(&v, 0));
     assert(vector_tamano(&v) == 0);
     assert(vector_redimensionar(&v, 2));
+    assert(!vector_crear(&v, 4)); /* No pierde recursos anteriores. */
+    assert(vector_tamano(&v) == 2);
     assert(vector_asignar(&v, 0, input));
     assert(vector_recuperar(&v, 0, &borrowed));
     assert(borrowed != input);
